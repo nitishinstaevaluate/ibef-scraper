@@ -1,0 +1,751 @@
+{
+  "info": {
+    "name": "IBEF Scraper API",
+    "description": "REST API collection for IBEF (India Brand Equity Foundation) scraper service",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    },
+    {
+      "key": "apiPrefix",
+      "value": "/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "health"]
+            },
+            "description": "Check the health status of the scraper service and database connection"
+          },
+          "response": [
+            {
+              "name": "Healthy Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/health",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"healthy\",\n  \"scraper\": true,\n  \"database\": true,\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Scraping Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/scrape/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "scrape", "status"]
+            },
+            "description": "Get the current status of any ongoing scraping operation"
+          },
+          "response": [
+            {
+              "name": "Scraping in Progress",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/scrape/status",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "scrape", "status"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"totalIndustries\": 50,\n  \"completed\": 25,\n  \"failed\": 2,\n  \"inProgress\": 1,\n  \"results\": [],\n  \"startTime\": \"2024-01-15T10:00:00.000Z\",\n  \"isComplete\": false\n}"
+            },
+            {
+              "name": "No Scraping in Progress",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/scrape/status",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "scrape", "status"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"No scraping operation in progress\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Scraping Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "stats"]
+            },
+            "description": "Get overall scraping statistics and metrics"
+          },
+          "response": [
+            {
+              "name": "Statistics Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/stats",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "stats"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"totalIndustries\": 150,\n  \"scrapedIndustries\": 145,\n  \"successRate\": 96.67,\n  \"lastScraped\": \"2024-01-15T09:45:00.000Z\",\n  \"averageProcessingTime\": 2500\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Health check and status monitoring endpoints"
+    },
+    {
+      "name": "Scraping Operations",
+      "item": [
+        {
+          "name": "Start Full Scraping",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/scrape/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "scrape", "start"]
+            },
+            "description": "Start scraping all industries from the IBEF website"
+          },
+          "response": [
+            {
+              "name": "Scraping Started",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/scrape/start",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "scrape", "start"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Scraping started\",\n  \"totalIndustries\": 50,\n  \"startTime\": \"2024-01-15T10:00:00.000Z\"\n}"
+            },
+            {
+              "name": "Already in Progress",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/scrape/start",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "scrape", "start"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Scraping operation already in progress\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Scrape Single Industry",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://ibef.org/industry/automotive\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/scrape/single",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "scrape", "single"]
+            },
+            "description": "Scrape a single industry page by providing its URL"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"url\": \"https://ibef.org/industry/automotive\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/scrape/single",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "scrape", "single"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Industry scraped successfully\",\n  \"data\": {\n    \"slug\": \"automotive\",\n    \"name\": \"Automotive\",\n    \"url\": \"https://ibef.org/industry/automotive\",\n    \"description\": \"Industry description...\",\n    \"keyFacts\": [],\n    \"marketSize\": {},\n    \"growthDrivers\": [],\n    \"investmentOpportunities\": [],\n    \"scrapedAt\": \"2024-01-15T10:30:00.000Z\"\n  }\n}"
+            },
+            {
+              "name": "Missing URL",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/scrape/single",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "scrape", "single"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": \"URL is required\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Endpoints for initiating scraping operations"
+    },
+    {
+      "name": "Industry Data",
+      "item": [
+        {
+          "name": "Get All Industries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/industries",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "industries"]
+            },
+            "description": "Retrieve all scraped industry data"
+          },
+          "response": [
+            {
+              "name": "Industries List",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"industries\": [\n    {\n      \"slug\": \"automotive\",\n      \"name\": \"Automotive\",\n      \"url\": \"https://ibef.org/industry/automotive\",\n      \"description\": \"Industry description...\",\n      \"scrapedAt\": \"2024-01-15T10:30:00.000Z\"\n    }\n  ],\n  \"count\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Recent Industries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/industries/recent?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "industries", "recent"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of recent industries to retrieve (default: 10)"
+                }
+              ]
+            },
+            "description": "Get recently scraped industries with optional limit"
+          },
+          "response": [
+            {
+              "name": "Recent Industries",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries/recent?limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries", "recent"],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"industries\": [\n    {\n      \"slug\": \"automotive\",\n      \"name\": \"Automotive\",\n      \"url\": \"https://ibef.org/industry/automotive\",\n      \"scrapedAt\": \"2024-01-15T10:30:00.000Z\"\n    }\n  ],\n  \"count\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search Industries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/industries/search?q=automotive",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "industries", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "automotive",
+                  "description": "Search query string"
+                }
+              ]
+            },
+            "description": "Search industries by name or description"
+          },
+          "response": [
+            {
+              "name": "Search Results",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries/search?q=automotive",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries", "search"],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "automotive"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"industries\": [\n    {\n      \"slug\": \"automotive\",\n      \"name\": \"Automotive\",\n      \"url\": \"https://ibef.org/industry/automotive\",\n      \"description\": \"Industry description...\"\n    }\n  ],\n  \"count\": 1,\n  \"query\": \"automotive\"\n}"
+            },
+            {
+              "name": "Missing Query",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries/search",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries", "search"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": \"Search query is required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Industry by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/industries/automotive",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "industries", "automotive"]
+            },
+            "description": "Get detailed information about a specific industry by its slug"
+          },
+          "response": [
+            {
+              "name": "Industry Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries/automotive",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries", "automotive"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"slug\": \"automotive\",\n  \"name\": \"Automotive\",\n  \"url\": \"https://ibef.org/industry/automotive\",\n  \"description\": \"The automotive industry in India is one of the largest in the world...\",\n  \"keyFacts\": [\n    {\n      \"title\": \"Market Size\",\n      \"value\": \"$100 billion\"\n    }\n  ],\n  \"marketSize\": {\n    \"current\": \"$100 billion\",\n    \"projected\": \"$150 billion by 2025\"\n  },\n  \"growthDrivers\": [\n    \"Government initiatives\",\n    \"Rising disposable income\"\n  ],\n  \"investmentOpportunities\": [\n    \"Electric vehicles\",\n    \"Autonomous driving\"\n  ],\n  \"scrapedAt\": \"2024-01-15T10:30:00.000Z\"\n}"
+            },
+            {
+              "name": "Industry Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries/nonexistent",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries", "nonexistent"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": \"Industry not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Industry",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/industries/automotive",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{apiPrefix}}", "industries", "automotive"]
+            },
+            "description": "Delete industry data by slug"
+          },
+          "response": [
+            {
+              "name": "Successfully Deleted",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries/automotive",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries", "automotive"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"Industry deleted successfully\"\n}"
+            },
+            {
+              "name": "Industry Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}{{apiPrefix}}/industries/nonexistent",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["{{apiPrefix}}", "industries", "nonexistent"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"error\": \"Industry not found\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Endpoints for managing and retrieving industry data"
+    },
+    {
+      "name": "Root Endpoint",
+      "item": [
+        {
+          "name": "API Information",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            },
+            "description": "Get basic API information and available endpoints"
+          },
+          "response": [
+            {
+              "name": "API Info",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/",
+                  "host": ["{{baseUrl}}"],
+                  "path": [""]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"message\": \"IBEF Scraper API\",\n  \"version\": \"1.0.0\",\n  \"status\": \"running\",\n  \"endpoints\": {\n    \"health\": \"/api/health\",\n    \"scrape\": \"/api/scrape/start\",\n    \"industries\": \"/api/industries\",\n    \"stats\": \"/api/stats\"\n  }\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Root endpoint with API information"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set default headers if not already set",
+          "if (!pm.request.headers.has('Content-Type') && pm.request.method === 'POST') {",
+          "    pm.request.headers.add({",
+          "        key: 'Content-Type',",
+          "        value: 'application/json'",
+          "    });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Log response time",
+          "console.log('Response time:', pm.response.responseTime + 'ms');",
+          "",
+          "// Log response status",
+          "console.log('Response status:', pm.response.status);",
+          "",
+          "// Basic response validation",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Response has valid JSON', function () {",
+          "    pm.response.to.have.jsonBody();",
+          "});"
+        ]
+      }
+    }
+  ]
+}
