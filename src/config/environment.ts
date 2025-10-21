@@ -41,7 +41,7 @@ export interface EnvironmentConfig {
 
 const config: EnvironmentConfig = {
   mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/ibef_scraper',
+    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/ifin',
     database: process.env.MONGODB_DATABASE || 'ibef_scraper'
   },
   
