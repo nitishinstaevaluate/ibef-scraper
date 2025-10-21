@@ -384,8 +384,22 @@ export class IndustryScraper {
     let content = '';
     const majorInvestments: string[] = [];
 
-    // Look for investment section using CSS class
-    const investmentSection = this.$('.common-section.investment');
+    // Look for investment section using multiple CSS class variations
+    // Some pages use .investment, others use .recent-development, .investments, or .recent-development/investments
+    const investmentSelectors = [
+      '.common-section.investment',
+      '.common-section.recent-development',
+      '.common-section.investments',
+      '.common-section.developments\\/investments',  // developments/investments
+      '.common-section.recent-development\\/investments'  // recent-development/investments
+    ];
+
+    let investmentSection = this.$('');
+    for (const selector of investmentSelectors) {
+      investmentSection = this.$(selector);
+      if (investmentSection.length) break;
+    }
+
     if (investmentSection.length) {
       content = investmentSection.find('p').first().text().trim();
 
