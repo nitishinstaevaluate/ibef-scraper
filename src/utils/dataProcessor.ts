@@ -7,7 +7,7 @@ export class DataProcessor {
    */
   static cleanText(text: string): string {
     if (!text) return '';
-    
+
     return text
       .replace(/\s+/g, ' ') // Replace multiple spaces with single space
       .replace(/\n\s*\n/g, '\n') // Replace multiple newlines with single newline
@@ -20,7 +20,7 @@ export class DataProcessor {
    */
   static extractNumericValue(text: string): number | null {
     if (!text) return null;
-    
+
     const match = text.match(/[\d,]+\.?\d*/);
     if (match) {
       return parseFloat(match[0].replace(/,/g, ''));
@@ -33,7 +33,7 @@ export class DataProcessor {
    */
   static extractCurrencyValue(text: string): { value: number; currency: string } | null {
     if (!text) return null;
-    
+
     const currencyMatch = text.match(/(Rs\.?|USD|US\$|INR|₹)\s*([\d,]+\.?\d*)/i);
     if (currencyMatch) {
       const value = parseFloat(currencyMatch[2].replace(/,/g, ''));
@@ -48,7 +48,7 @@ export class DataProcessor {
    */
   static extractPercentage(text: string): number | null {
     if (!text) return null;
-    
+
     const match = text.match(/([\d,]+\.?\d*)\s*%/);
     if (match) {
       return parseFloat(match[1].replace(/,/g, ''));
@@ -122,6 +122,21 @@ export class DataProcessor {
             }))
           }
         },
+        introduction: {
+          title: this.cleanText(data.introduction?.title || ''),
+          content: this.cleanText(data.introduction?.content || ''),
+          keyPoints: (data.introduction?.keyPoints || []).map(point => this.cleanText(point))
+        },
+        marketSize: {
+          title: this.cleanText(data.marketSize?.title || ''),
+          content: this.cleanText(data.marketSize?.content || ''),
+          statistics: this.cleanKeyStats(data.marketSize?.statistics || [])
+        },
+        investments: {
+          title: this.cleanText(data.investments?.title || ''),
+          content: this.cleanText(data.investments?.content || ''),
+          majorInvestments: (data.investments?.majorInvestments || []).map(investment => this.cleanText(investment))
+        },
         sectorOverview: {
           title: this.cleanText(data.sectorOverview?.title || ''),
           content: this.cleanText(data.sectorOverview?.content || ''),
@@ -142,6 +157,11 @@ export class DataProcessor {
             beneficiaries: scheme.beneficiaries ? this.cleanText(scheme.beneficiaries) : undefined,
             status: scheme.status || 'active'
           }))
+        },
+        governmentInitiatives: {
+          title: this.cleanText(data.governmentInitiatives?.title || ''),
+          description: this.cleanText(data.governmentInitiatives?.description || ''),
+          initiatives: (data.governmentInitiatives?.initiatives || []).map(initiative => this.cleanText(initiative))
         },
         policySupport: {
           title: this.cleanText(data.policySupport?.title || ''),
@@ -230,18 +250,18 @@ export class DataProcessor {
    */
   static extractKeywords(text: string, maxKeywords: number = 10): string[] {
     if (!text) return [];
-    
+
     const words = text
       .toLowerCase()
       .replace(/[^\w\s]/g, '')
       .split(/\s+/)
       .filter(word => word.length > 3);
-    
+
     const wordCount: { [key: string]: number } = {};
     words.forEach(word => {
       wordCount[word] = (wordCount[word] || 0) + 1;
     });
-    
+
     return Object.entries(wordCount)
       .sort(([, a], [, b]) => b - a)
       .slice(0, maxKeywords)

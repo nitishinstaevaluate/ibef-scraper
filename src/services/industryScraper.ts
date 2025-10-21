@@ -23,8 +23,12 @@ export class IndustryScraper {
         scrapedAt: new Date(),
         overview: this.extractOverview(),
         sectorOverview: this.extractSectorOverview(),
+        introduction: this.extractIntroduction(),
+        marketSize: this.extractMarketSize(),
+        investments: this.extractInvestments(),
         statutoryBodies: this.extractStatutoryBodies(),
         governmentSchemes: this.extractGovernmentSchemes(),
+        governmentInitiatives: this.extractGovernmentInitiatives(),
         policySupport: this.extractPolicySupport(),
         achievements: this.extractAchievements(),
         roadAhead: this.extractRoadAhead(),
@@ -77,11 +81,11 @@ export class IndustryScraper {
 
   private extractOverview(): { title: string; description: string; keyStats: KeyStat[]; advantageIndia: AdvantageIndia } {
     const title = this.$('h1').first().text().trim();
-    
+
     // Extract description from the first paragraph or intro section
     let description = '';
     const introSelectors = ['.sector-overview', '.introduction', '.overview', '.description'];
-    
+
     for (const selector of introSelectors) {
       const section = this.$(selector).first();
       if (section.length) {
@@ -89,7 +93,7 @@ export class IndustryScraper {
         if (description) break;
       }
     }
-    
+
     if (!description) {
       description = this.$('p').first().text().trim();
     }
@@ -105,7 +109,7 @@ export class IndustryScraper {
 
   private extractKeyStats(): KeyStat[] {
     const keyStats: KeyStat[] = [];
-    
+
     // Look for various stat containers
     const statSelectors = [
       '.key-stats .stat',
@@ -119,12 +123,12 @@ export class IndustryScraper {
     statSelectors.forEach(selector => {
       this.$(selector).each((_, element) => {
         const $el = this.$(element);
-        const label = $el.find('.label, .title, .name').text().trim() || 
-                     $el.find('strong, b').text().trim() ||
-                     $el.attr('data-label') || '';
-        const value = $el.find('.value, .number, .amount').text().trim() || 
-                     $el.text().replace(label, '').trim();
-        
+        const label = $el.find('.label, .title, .name').text().trim() ||
+          $el.find('strong, b').text().trim() ||
+          $el.attr('data-label') || '';
+        const value = $el.find('.value, .number, .amount').text().trim() ||
+          $el.text().replace(label, '').trim();
+
         if (label && value && !label.includes(value)) {
           keyStats.push({
             label: DataProcessor.cleanText(label),
@@ -142,7 +146,7 @@ export class IndustryScraper {
       if (cells.length >= 2) {
         const label = cells.first().text().trim();
         const value = cells.eq(1).text().trim();
-        
+
         if (label && value && !label.includes(value)) {
           keyStats.push({
             label: DataProcessor.cleanText(label),
@@ -161,24 +165,24 @@ export class IndustryScraper {
 
     // Look for Advantage India section
     const advantageSection = this.$('*:contains("Advantage India")').closest('div, section').first();
-    
+
     if (advantageSection.length) {
       advantageSection.find('h3, h4, .subtitle, .section-title').each((_, element) => {
         const $el = this.$(element);
         const sectionTitle = $el.text().trim();
         const content = $el.nextUntil('h3, h4, .subtitle, .section-title').text().trim();
         const keyPoints: string[] = [];
-        
+
         $el.nextUntil('h3, h4, .subtitle, .section-title').find('li, .bullet-point, .point').each((_, li) => {
           const point = this.$(li).text().trim();
           if (point) keyPoints.push(DataProcessor.cleanText(point));
         });
 
         if (sectionTitle && (content || keyPoints.length > 0)) {
-          sections.push({ 
-            title: DataProcessor.cleanText(sectionTitle), 
-            content: DataProcessor.cleanText(content), 
-            keyPoints 
+          sections.push({
+            title: DataProcessor.cleanText(sectionTitle),
+            content: DataProcessor.cleanText(content),
+            keyPoints
           });
         }
       });
@@ -194,7 +198,7 @@ export class IndustryScraper {
 
     // Look for sector overview content
     const overviewSelectors = ['.sector-overview', '.overview', '.introduction', '.description'];
-    
+
     for (const selector of overviewSelectors) {
       const section = this.$(selector).first();
       if (section.length) {
@@ -225,10 +229,10 @@ export class IndustryScraper {
       });
     }
 
-    return { 
-      title, 
-      description: DataProcessor.cleanText(description), 
-      bodies 
+    return {
+      title,
+      description: DataProcessor.cleanText(description),
+      bodies
     };
   }
 
@@ -241,14 +245,14 @@ export class IndustryScraper {
     const schemesSection = this.$('*:contains("Government Schemes")').closest('div, section').first();
     if (schemesSection.length) {
       description = schemesSection.text().trim();
-      
+
       schemesSection.find('li, .scheme-item, .program-item').each((_, element) => {
         const $el = this.$(element);
         const name = $el.find('.name, .title, .scheme-name').text().trim() || $el.text().trim();
         const description = $el.find('.description, .details').text().trim();
         const amount = $el.find('.amount, .value, .budget').text().trim();
         const beneficiaries = $el.find('.beneficiaries, .target').text().trim();
-        
+
         if (name) {
           schemes.push({
             name: DataProcessor.cleanText(name),
@@ -261,10 +265,10 @@ export class IndustryScraper {
       });
     }
 
-    return { 
-      title, 
-      description: DataProcessor.cleanText(description), 
-      schemes 
+    return {
+      title,
+      description: DataProcessor.cleanText(description),
+      schemes
     };
   }
 
@@ -277,13 +281,13 @@ export class IndustryScraper {
     const policySection = this.$('*:contains("Policy Support")').closest('div, section').first();
     if (policySection.length) {
       description = policySection.text().trim();
-      
+
       policySection.find('li, .policy-item, .initiative-item').each((_, element) => {
         const $el = this.$(element);
         const policyTitle = $el.find('.title, .name, .policy-name').text().trim() || $el.text().trim();
         const policyDescription = $el.find('.description, .details').text().trim();
         const effectiveDate = $el.find('.date, .effective-date, .launch-date').text().trim();
-        
+
         if (policyTitle) {
           policies.push({
             title: DataProcessor.cleanText(policyTitle),
@@ -295,10 +299,10 @@ export class IndustryScraper {
       });
     }
 
-    return { 
-      title, 
-      description: DataProcessor.cleanText(description), 
-      policies 
+    return {
+      title,
+      description: DataProcessor.cleanText(description),
+      policies
     };
   }
 
@@ -317,10 +321,109 @@ export class IndustryScraper {
       });
     }
 
-    return { 
-      title, 
-      description: DataProcessor.cleanText(description), 
-      achievements 
+    return {
+      title,
+      description: DataProcessor.cleanText(description),
+      achievements
+    };
+  }
+
+  private extractIntroduction(): { title: string; content: string; keyPoints: string[] } {
+    const title = 'Introduction';
+    let content = '';
+    const keyPoints: string[] = [];
+
+    // Look for introduction section using CSS class
+    const introSection = this.$('.common-section.introduction');
+    if (introSection.length) {
+      content = introSection.find('p').text().trim();
+      introSection.find('li').each((_, element) => {
+        const point = this.$(element).text().trim();
+        if (point) keyPoints.push(DataProcessor.cleanText(point));
+      });
+    }
+
+    return {
+      title,
+      content: DataProcessor.cleanText(content),
+      keyPoints
+    };
+  }
+
+  private extractMarketSize(): { title: string; content: string; statistics: KeyStat[] } {
+    const title = 'Market Size';
+    let content = '';
+    const statistics: KeyStat[] = [];
+
+    // Look for market size section using CSS class
+    const marketSizeSection = this.$('.common-section.market-size');
+    if (marketSizeSection.length) {
+      content = marketSizeSection.find('p').text().trim();
+
+      // Extract statistics from list items or paragraphs
+      marketSizeSection.find('li, p').each((_, element) => {
+        const text = this.$(element).text().trim();
+        if (text && text.includes('crore') || text.includes('billion') || text.includes('million') || text.includes('%')) {
+          statistics.push({
+            label: 'Market Data',
+            value: DataProcessor.cleanText(text)
+          });
+        }
+      });
+    }
+
+    return {
+      title,
+      content: DataProcessor.cleanText(content),
+      statistics
+    };
+  }
+
+  private extractInvestments(): { title: string; content: string; majorInvestments: string[] } {
+    const title = 'Investment';
+    let content = '';
+    const majorInvestments: string[] = [];
+
+    // Look for investment section using CSS class
+    const investmentSection = this.$('.common-section.investment');
+    if (investmentSection.length) {
+      content = investmentSection.find('p').first().text().trim();
+
+      // Extract investment items from list
+      investmentSection.find('li').each((_, element) => {
+        const investment = this.$(element).text().trim();
+        if (investment) majorInvestments.push(DataProcessor.cleanText(investment));
+      });
+    }
+
+    return {
+      title,
+      content: DataProcessor.cleanText(content),
+      majorInvestments
+    };
+  }
+
+  private extractGovernmentInitiatives(): { title: string; description: string; initiatives: string[] } {
+    const title = 'Government Initiatives';
+    let description = '';
+    const initiatives: string[] = [];
+
+    // Look for government initiatives section using CSS class
+    const governmentInitiativesSection = this.$('.common-section.government-initiatives');
+    if (governmentInitiativesSection.length) {
+      description = governmentInitiativesSection.find('p').first().text().trim();
+
+      // Extract initiatives from list items
+      governmentInitiativesSection.find('li').each((_, element) => {
+        const initiative = this.$(element).text().trim();
+        if (initiative) initiatives.push(DataProcessor.cleanText(initiative));
+      });
+    }
+
+    return {
+      title,
+      description: DataProcessor.cleanText(description),
+      initiatives
     };
   }
 
@@ -329,20 +432,20 @@ export class IndustryScraper {
     let description = '';
     const goals: string[] = [];
 
-    // Look for road ahead section
-    const roadAheadSection = this.$('*:contains("Road Ahead")').closest('div, section').first();
+    // Look for road ahead section using CSS class
+    const roadAheadSection = this.$('.common-section.road-ahead');
     if (roadAheadSection.length) {
-      description = roadAheadSection.text().trim();
+      description = roadAheadSection.find('p').text().trim();
       roadAheadSection.find('li, .goal-item, .objective').each((_, element) => {
         const goal = this.$(element).text().trim();
         if (goal) goals.push(DataProcessor.cleanText(goal));
       });
     }
 
-    return { 
-      title, 
-      description: DataProcessor.cleanText(description), 
-      goals 
+    return {
+      title,
+      description: DataProcessor.cleanText(description),
+      goals
     };
   }
 
@@ -404,9 +507,9 @@ export class IndustryScraper {
 
   private extractMSMEData(): MSMEData | undefined {
     // Check if this is MSME industry
-    const isMSME = this.$('*:contains("MSME")').length > 0 || 
-                   this.$('title').text().toLowerCase().includes('msme') ||
-                   this.$('h1').text().toLowerCase().includes('msme');
+    const isMSME = this.$('*:contains("MSME")').length > 0 ||
+      this.$('title').text().toLowerCase().includes('msme') ||
+      this.$('h1').text().toLowerCase().includes('msme');
 
     if (!isMSME) return undefined;
 
@@ -434,7 +537,7 @@ export class IndustryScraper {
       const text = $el.text();
       const investmentMatch = text.match(/Rs\.?\s*([0-9,\.]+)\s*crore/i);
       const turnoverMatch = text.match(/Rs\.?\s*([0-9,\.]+)\s*crore/i);
-      
+
       if (investmentMatch) classification.micro.investmentLimit = investmentMatch[1];
       if (turnoverMatch) classification.micro.turnoverLimit = turnoverMatch[1];
     });

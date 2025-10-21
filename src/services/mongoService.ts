@@ -9,7 +9,7 @@ const IBEFIndustrySchema = new mongoose.Schema({
   url: { type: String, required: true, unique: true },
   lastUpdated: { type: Date, default: Date.now },
   scrapedAt: { type: Date, default: Date.now },
-  
+
   overview: {
     title: String,
     description: String,
@@ -27,19 +27,47 @@ const IBEFIndustrySchema = new mongoose.Schema({
       }]
     }
   },
-  
+
+  introduction: {
+    title: String,
+    content: String,
+    keyPoints: [String]
+  },
+
+  marketSize: {
+    title: String,
+    content: String,
+    statistics: [{
+      label: String,
+      value: String,
+      description: String
+    }]
+  },
+
+  investments: {
+    title: String,
+    content: String,
+    majorInvestments: [String]
+  },
+
+  governmentInitiatives: {
+    title: String,
+    description: String,
+    initiatives: [String]
+  },
+
   sectorOverview: {
     title: String,
     content: String,
     keyPoints: [String]
   },
-  
+
   statutoryBodies: {
     title: String,
     description: String,
     bodies: [String]
   },
-  
+
   governmentSchemes: {
     title: String,
     description: String,
@@ -51,7 +79,7 @@ const IBEFIndustrySchema = new mongoose.Schema({
       status: { type: String, enum: ['active', 'completed', 'upcoming'], default: 'active' }
     }]
   },
-  
+
   policySupport: {
     title: String,
     description: String,
@@ -62,19 +90,19 @@ const IBEFIndustrySchema = new mongoose.Schema({
       status: { type: String, enum: ['active', 'draft', 'expired'], default: 'active' }
     }]
   },
-  
+
   achievements: {
     title: String,
     description: String,
     achievements: [String]
   },
-  
+
   roadAhead: {
     title: String,
     description: String,
     goals: [String]
   },
-  
+
   relatedNews: [{
     title: String,
     date: String,
@@ -82,14 +110,14 @@ const IBEFIndustrySchema = new mongoose.Schema({
     url: String,
     source: String
   }],
-  
+
   industryContacts: [{
     name: String,
     organization: String,
     role: String,
     contactInfo: String
   }],
-  
+
   msmeData: {
     classification: {
       micro: {
@@ -115,7 +143,7 @@ const IBEFIndustrySchema = new mongoose.Schema({
       totalGDP: String
     }
   },
-  
+
   metadata: {
     totalSections: { type: Number, default: 0 },
     hasImages: { type: Boolean, default: false },
@@ -136,7 +164,7 @@ IBEFIndustrySchema.index({ 'overview.keyStats.label': 1 });
 IBEFIndustrySchema.index({ createdAt: -1 });
 IBEFIndustrySchema.index({ updatedAt: -1 });
 
-export interface IBEFIndustryDocument extends Omit<IBEFIndustryData, '_id'>, Document {}
+export interface IBEFIndustryDocument extends Omit<IBEFIndustryData, '_id'>, Document { }
 
 export class MongoService {
   private connection: Connection | null = null;
@@ -145,30 +173,30 @@ export class MongoService {
   async connect(connectionString: string): Promise<void> {
     try {
       logger.info('Connecting to MongoDB...');
-      
+
       // Add connection event listeners
       mongoose.connection.on('error', (error) => {
         logger.error('MongoDB connection error:', error);
       });
-      
+
       mongoose.connection.on('disconnected', () => {
         logger.warn('MongoDB disconnected');
       });
-      
+
       mongoose.connection.on('reconnected', () => {
         logger.info('MongoDB reconnected');
       });
-      
+
       await mongoose.connect(connectionString, {
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
         bufferCommands: false
       });
-      
+
       this.connection = mongoose.connection;
       this.IndustryModel = mongoose.model<IBEFIndustryDocument>('IBEFIndustry', IBEFIndustrySchema);
-      
+
       logger.info('Connected to MongoDB successfully');
     } catch (error) {
       logger.error('MongoDB connection error:', error);
@@ -194,18 +222,18 @@ export class MongoService {
       // Use upsert to update existing or create new
       const result = await this.IndustryModel.findOneAndUpdate(
         { industrySlug: data.industrySlug },
-        { 
+        {
           ...data,
           lastUpdated: new Date(),
           scrapedAt: new Date()
         },
-        { 
-          upsert: true, 
-          new: true, 
-          runValidators: true 
+        {
+          upsert: true,
+          new: true,
+          runValidators: true
         }
       );
-      
+
       logger.info(`Saved industry data for: ${data.industryName}`);
       return result;
     } catch (error) {
@@ -276,11 +304,11 @@ export class MongoService {
 
     const totalIndustries = await this.IndustryModel.countDocuments();
     const lastScraped = await this.IndustryModel.findOne().sort({ scrapedAt: -1 }).select('scrapedAt');
-    
+
     // Get industries by month for the last 12 months
     const twelveMonthsAgo = new Date();
     twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
-    
+
     const industriesByMonth = await this.IndustryModel.aggregate([
       {
         $match: {

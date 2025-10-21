@@ -5,7 +5,7 @@ export interface IBEFIndustryData {
   url: string;
   lastUpdated: Date;
   scrapedAt: Date;
-  
+
   // Overview section
   overview: {
     title: string;
@@ -13,58 +13,86 @@ export interface IBEFIndustryData {
     keyStats: KeyStat[];
     advantageIndia: AdvantageIndia;
   };
-  
+
+  // Introduction section
+  introduction: {
+    title: string;
+    content: string;
+    keyPoints: string[];
+  };
+
+  // Market Size section
+  marketSize: {
+    title: string;
+    content: string;
+    statistics: KeyStat[];
+  };
+
+  // Investments section
+  investments: {
+    title: string;
+    content: string;
+    majorInvestments: string[];
+  };
+
   // Sector overview
   sectorOverview: {
     title: string;
     content: string;
     keyPoints: string[];
   };
-  
+
   // Statutory bodies
   statutoryBodies: {
     title: string;
     description: string;
     bodies: string[];
   };
-  
+
   // Government schemes
   governmentSchemes: {
     title: string;
     description: string;
     schemes: Scheme[];
   };
-  
+
+  // Government initiatives
+  governmentInitiatives: {
+    title: string;
+    description: string;
+    initiatives: string[];
+  };
+
   // Policy support
   policySupport: {
     title: string;
     description: string;
     policies: Policy[];
   };
-  
+
   // Achievements
   achievements: {
     title: string;
     description: string;
     achievements: string[];
   };
-  
+
   // Road ahead
   roadAhead: {
     title: string;
     description: string;
     goals: string[];
   };
-  
+
   // Related news
   relatedNews: NewsItem[];
-  
+
   // Industry contacts
   industryContacts: Contact[];
-  
+
   // MSME specific data (for MSME industry)
   msmeData?: MSMEData;
-  
+
   // Additional metadata
   metadata: {
     totalSections: number;
