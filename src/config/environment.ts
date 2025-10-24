@@ -7,7 +7,6 @@ export interface EnvironmentConfig {
   // MongoDB Configuration
   mongodb: {
     uri: string;
-    database: string;
   };
   
   // Scraping Configuration
@@ -41,8 +40,9 @@ export interface EnvironmentConfig {
 
 const config: EnvironmentConfig = {
   mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/ifin',
-    database: process.env.MONGODB_DATABASE || 'ibef_scraper'
+    uri: process.env.MONGODB_URI || (() => {
+      throw new Error('MONGODB_URI environment variable is required');
+    })()
   },
   
   scraping: {
@@ -55,7 +55,7 @@ const config: EnvironmentConfig = {
   },
   
   server: {
-    port: parseInt(process.env.PORT || '3001'),
+    port: parseInt(process.env.PORT || '5002'),
     nodeEnv: process.env.NODE_ENV || 'development'
   },
   
