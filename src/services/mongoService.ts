@@ -153,7 +153,7 @@ const IBEFIndustrySchema = new mongoose.Schema({
   }
 }, {
   timestamps: true,
-  collection: 'ibef_scraper'
+  collection: 'ibefscraper'
 });
 
 // Create indexes for better performance
