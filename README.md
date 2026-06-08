@@ -81,10 +81,20 @@ Every day at **2:00 AM IST**, it will automatically:
 Useful commands:
 
 ```bash
-pm2 logs ibef-scraper-cron
+pm2 logs ibef-scraper-cron          # live stream
+tail -f logs/combined.log           # scrape output (stdout)
+tail -f logs/error.log              # errors only
 pm2 stop ibef-scraper-cron
-pm2 restart ibef-scraper-cron   # after code or .env changes
-npm run scrape                  # manual one-off scrape (anytime)
+pm2 restart ibef-scraper-cron       # after code or .env changes
+npm run scrape                      # manual one-off scrape (anytime)
+```
+
+**Logs:** The scraper uses `console.log` (no Winston). PM2 writes that output to `logs/combined.log` and `logs/error.log` in the project folder. After updating `ecosystem.config.js`, restart PM2 so the new log paths take effect:
+
+```bash
+pm2 delete ibef-scraper-cron
+pm2 start ecosystem.config.js
+pm2 save
 ```
 
 ### Manual / debugging
