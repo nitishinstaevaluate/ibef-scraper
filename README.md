@@ -70,7 +70,9 @@ pm2 save
 pm2 startup   # run the command it prints, so cron survives reboots
 ```
 
-Every day at **2:00 AM** (server local time), it will automatically:
+The cron is set to `30 20 * * *` UTC, which equals **2:00 AM IST** (Azure VMs use UTC by default).
+
+Every day at **2:00 AM IST**, it will automatically:
 1. Build the project
 2. Scrape all IBEF industries
 3. Save to MongoDB
