@@ -1,54 +1,27 @@
 {
   "name": "ibef-scraper",
   "version": "1.0.0",
-  "description": "A TypeScript web scraper for IBEF (India Brand Equity Foundation) industry data",
-  "main": "dist/app.js",
+  "description": "Scrapes IBEF industry data into MongoDB for the backend startup report",
+  "private": true,
+  "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/app.ts",
     "build": "tsc",
-    "start": "node dist/app.js",
     "scrape": "npm run build && node dist/scripts/scrape.js",
     "scrape:single": "npm run build && node dist/scripts/scrape-single.js",
-    "test": "jest",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint \"src/**/*.ts\" --fix",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "web-scraping",
-    "ibef",
-    "india",
-    "industry-data",
-    "mongodb",
-    "typescript"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
   "dependencies": {
     "axios": "^1.7.0",
     "cheerio": "^1.0.0",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.0",
-    "express": "^4.19.0",
-    "helmet": "^7.1.0",
-    "mongoose": "^8.0.0",
-    "morgan": "^1.10.0",
-    "node-cron": "^3.0.3",
-    "puppeteer": "^24.26.1",
-    "winston": "^3.13.0"
+    "mongoose": "^7.6.7"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.12",
-    "@types/morgan": "^1.9.9",
     "@types/node": "^22.0.0",
-    "@types/node-cron": "^3.0.11",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.0.0",
-    "jest": "^29.7.0",
-    "nodemon": "^3.1.0",
-    "ts-jest": "^29.2.0",
     "typescript": "^5.6.0"
   },
   "engines": {
